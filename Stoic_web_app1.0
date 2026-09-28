@@ -1,0 +1,269 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stoic Reflection & Composure Routine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Lora', 'serif'],
+            cinzel: ['Cinzel', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            stoic: {
+              50: '#f8f8f6',
+              100: '#efefe9',
+              200: '#dfded3',
+              300: '#c8c6b5',
+              400: '#aba894',
+              500: '#908c75',
+              600: '#736f5c',
+              700: '#5c5849',
+              800: '#4a473b',
+              900: '#23221c',
+              950: '#141410'
+            },
+            parchment: {
+              50: '#faf8f5',
+              100: '#f3efe8',
+              200: '#e5ded1',
+              800: '#262421',
+              900: '#1c1b18'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(144, 140, 117, 0.25);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(144, 140, 117, 0.45);
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.08); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .animate-breath {
+      animation: pulse-ring 8s ease-in-out infinite;
+    }
+  </style>
+</head>
+
+<body class="bg-stoic-50 text-stoic-900 dark:bg-stoic-950 dark:text-stoic-100 min-h-screen flex flex-col antialiased selection:bg-stoic-300 dark:selection:bg-stoic-700">
+
+  <header class="border-b border-stoic-200 dark:border-stoic-800 bg-white/70 dark:bg-stoic-900/70 backdrop-blur-md sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-stoic-800 dark:bg-stoic-100 text-stoic-50 dark:text-stoic-950 flex items-center justify-center font-cinzel font-bold text-lg shadow-sm">
+            Ψ
+          </div>
+          <div>
+            <h1 class="font-cinzel text-xl font-bold tracking-tight text-stoic-900 dark:text-stoic-50">
+              The Sovereign Citadel
+            </h1>
+            <p class="text-xs text-stoic-600 dark:text-stoic-400 font-serif italic">
+              Stoic Composure & Emotional Boundaries
+            </p>
+          </div>
+        </div>
+        
+        <!-- Mobile theme toggle button -->
+        <button id="themeToggleMobile" class="md:hidden p-2 rounded-lg text-stoic-600 dark:text-stoic-300 hover:bg-stoic-100 dark:hover:bg-stoic-800 focus:outline-none" aria-label="Toggle theme">
+          <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z"/></svg>
+          <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+      </div>
+
+      <!-- Controls: Date selector, Streak badge, Sound & Theme -->
+      <div class="flex items-center flex-wrap gap-2.5">
+        <div class="flex items-center bg-stoic-100 dark:bg-stoic-800/80 rounded-xl px-3 py-1.5 border border-stoic-200/70 dark:border-stoic-700/60 shadow-inner">
+          <button id="prevDayBtn" class="p-1 text-stoic-600 hover:text-stoic-900 dark:text-stoic-400 dark:hover:text-stoic-100 hover:bg-stoic-200/50 dark:hover:bg-stoic-700/50 rounded transition" title="Previous Day">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <input type="date" id="activeDateInput" class="bg-transparent text-xs sm:text-sm font-medium text-stoic-800 dark:text-stoic-200 px-2 py-0.5 focus:outline-none cursor-pointer">
+          <button id="nextDayBtn" class="p-1 text-stoic-600 hover:text-stoic-900 dark:text-stoic-400 dark:hover:text-stoic-100 hover:bg-stoic-200/50 dark:hover:bg-stoic-700/50 rounded transition" title="Next Day">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <div class="flex items-center space-x-1.5 px-3 py-1.5 bg-amber-500/10 dark:bg-amber-400/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 rounded-xl text-xs font-semibold">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.527.82-1.17 2.05-1.503 3.398-.24.966-.34 1.834-.35 2.502-.27-.27-.58-.57-.93-.89a1 1 0 00-1.41.07 7.02 7.02 0 00-1.39 5.86c.4 1.93 1.88 3.51 3.76 4.02a7.02 7.02 0 006.74-2.14 7.03 7.03 0 001.65-6.27 11.23 11.23 0 00-4.75-7.02zM10 16a4.98 4.98 0 01-3.536-1.464 5.01 5.01 0 010-7.072c.48.49.98.98 1.48 1.45.39.37.99.37 1.38 0 .49-.46.99-.95 1.48-1.44a5.006 5.006 0 01-1.804 7.062z" clip-rule="evenodd"/></svg>
+          <span>Streak: <span id="streakCounter">0</span>d</span>
+        </div>
+
+        <!-- Audio bell switch -->
+        <button id="soundToggleBtn" class="px-2.5 py-1.5 rounded-xl border border-stoic-200 dark:border-stoic-700 bg-white dark:bg-stoic-900 text-xs font-medium text-stoic-600 dark:text-stoic-300 hover:bg-stoic-100 dark:hover:bg-stoic-800 transition flex items-center space-x-1" title="Toggle audio chime on completion">
+          <svg id="soundIconOn" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+          <span class="hidden sm:inline">Sound</span>
+        </button>
+
+        <!-- Desktop theme switch -->
+        <button id="themeToggleDesktop" class="hidden md:flex p-2 rounded-xl border border-stoic-200 dark:border-stoic-700 bg-white dark:bg-stoic-900 text-stoic-600 dark:text-stoic-300 hover:bg-stoic-100 dark:hover:bg-stoic-800 transition" aria-label="Toggle theme">
+          <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z"/></svg>
+          <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+
+        <button id="exportJournalBtn" class="px-3 py-1.5 rounded-xl bg-stoic-800 text-stoic-50 dark:bg-stoic-200 dark:text-stoic-900 hover:bg-stoic-700 dark:hover:bg-white text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
+          <span>Export Summary</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex-1 w-full space-y-6">
+
+    <!-- Stoic Maxim Banner -->
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-stoic-100 via-stone-50 to-stoic-100 dark:from-stoic-900 dark:via-parchment-900 dark:to-stoic-900 p-5 sm:p-6 border border-stoic-200/80 dark:border-stoic-800 shadow-sm">
+      <div class="absolute -right-4 -bottom-6 text-stoic-200 dark:text-stoic-800/40 text-8xl font-cinzel select-none pointer-events-none">Ψ</div>
+      <div class="relative z-10 max-w-3xl">
+        <div class="flex items-center space-x-2 text-xs uppercase tracking-widest text-stoic-500 font-semibold mb-2">
+          <span>Daily Principle for Equanimity</span>
+          <span>•</span>
+          <span id="quoteAuthor">Marcus Aurelius</span>
+        </div>
+        <blockquote id="dailyQuoteText" class="font-serif text-base sm:text-lg text-stoic-800 dark:text-stoic-200 leading-relaxed italic">
+          "You have power over your mind - not outside events. Realize this, and you will find strength."
+        </blockquote>
+        <p id="quoteContext" class="mt-2 text-xs text-stoic-500 dark:text-stoic-400">
+          Anchor yourself before engaging with the outside world: events cannot disturb you without your assent.
+        </p>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex border-b border-stoic-200 dark:border-stoic-800 gap-2 overflow-x-auto custom-scrollbar pb-1">
+      <button class="tab-btn active px-4 py-2.5 text-sm font-semibold border-b-2 border-stoic-800 dark:border-stoic-100 text-stoic-900 dark:text-stoic-100 whitespace-nowrap transition flex items-center space-x-2" data-tab="morning">
+        <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z"/></svg>
+        <span>Morning Preparation (Prosochê)</span>
+        <span id="morningBadge" class="ml-1 text-xs px-2 py-0.5 rounded-full bg-stoic-200 dark:bg-stoic-800 text-stoic-700 dark:text-stoic-300 font-mono">0/5</span>
+      </button>
+
+      <button class="tab-btn px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-stoic-500 hover:text-stoic-800 dark:text-stoic-400 dark:hover:text-stoic-200 whitespace-nowrap transition flex items-center space-x-2" data-tab="evening">
+        <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        <span>Evening Review (Examen)</span>
+        <span id="eveningBadge" class="ml-1 text-xs px-2 py-0.5 rounded-full bg-stoic-200 dark:bg-stoic-800 text-stoic-700 dark:text-stoic-300 font-mono">0/5</span>
+      </button>
+
+      <button class="tab-btn px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-stoic-500 hover:text-stoic-800 dark:text-stoic-400 dark:hover:text-stoic-200 whitespace-nowrap transition flex items-center space-x-2" data-tab="dichotomy">
+        <svg class="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <span>Control Sorter (Interactive)</span>
+      </button>
+
+      <button class="tab-btn px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-stoic-500 hover:text-stoic-800 dark:text-stoic-400 dark:hover:text-stoic-200 whitespace-nowrap transition flex items-center space-x-2" data-tab="breathing">
+        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <span>Composure Pacer</span>
+      </button>
+    </div>
+
+    <section id="section-morning" class="tab-content space-y-6">
+      <!-- Progress Bar Card -->
+      <div class="bg-white dark:bg-stoic-900 border border-stoic-200/90 dark:border-stoic-800 rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="font-cinzel text-lg font-bold text-stoic-900 dark:text-stoic-100">Morning Fortress: Preparing for the World</h2>
+            <p class="text-xs text-stoic-500">Cultivate inner sovereignty before checking devices, messages, or demands.</p>
+          </div>
+          <div class="text-right">
+            <span id="morningPercent" class="text-xl font-bold font-mono text-amber-600 dark:text-amber-400">0%</span>
+            <p class="text-[10px] uppercase tracking-wider text-stoic-400">Completed</p>
+          </div>
+        </div>
+        <div class="w-full bg-stoic-100 dark:bg-stoic-800 h-2 rounded-full overflow-hidden">
+          <div id="morningProgressBar" class="bg-gradient-to-r from-amber-500 to-amber-600 h-2 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Checklist Items -->
+      <div class="space-y-4" id="morningChecklistContainer">
+        <!-- Item 1: Dichotomy of Control Audit -->
+        <div class="routine-card bg-white dark:bg-stoic-900 border border-stoic-200 dark:border-stoic-800 rounded-2xl p-5 shadow-sm transition hover:border-stoic-400 dark:hover:border-stoic-700">
+          <div class="flex items-start gap-4">
+            <input type="checkbox" id="m_check_1" data-section="morning" data-key="m_check_1" class="checklist-box mt-1 w-5 h-5 rounded border-stoic-300 text-amber-600 focus:ring-amber-500 dark:border-stoic-700 dark:bg-stoic-800 cursor-pointer">
+            <div class="flex-1">
+              <label for="m_check_1" class="font-semibold text-sm sm:text-base text-stoic-900 dark:text-stoic-100 cursor-pointer select-none">
+                1. The Epictetian Split: Dichotomy of Control Audit
+              </label>
+              <p class="text-xs text-stoic-600 dark:text-stoic-400 mt-1 leading-relaxed">
+                Remind yourself: What lies ahead today is divided cleanly into two categories—what is up to me (my judgements, intentions, desires, impulses) and what is not (other people's reactions, delays, outcomes, opinions).
+              </p>
+              <div class="mt-3">
+                <input type="text" id="m_input_1" placeholder="What is the #1 external situation today I must not tie my peace to?" class="w-full text-xs sm:text-sm bg-stoic-50 dark:bg-stoic-950 border border-stoic-200 dark:border-stoic-800 rounded-xl px-3 py-2 text-stoic-800 dark:text-stoic-200 focus:outline-none focus:border-stoic-500 transition">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2: Premeditatio Malorum -->
+        <div class="routine-card bg-white dark:bg-stoic-900 border border-stoic-200 dark:border-stoic-800 rounded-2xl p-5 shadow-sm transition hover:border-stoic-400 dark:hover:border-stoic-700">
+          <div class="flex items-start gap-4">
+            <input type="checkbox" id="m_check_2" data-section="morning" data-key="m_check_2" class="checklist-box mt-1 w-5 h-5 rounded border-stoic-300 text-amber-600 focus:ring-amber-500 dark:border-stoic-700 dark:bg-stoic-800 cursor-pointer">
+            <div class="flex-1">
+              <label for="m_check_2" class="font-semibold text-sm sm:text-base text-stoic-900 dark:text-stoic-100 cursor-pointer select-none">
+                2. Morning Anticipation of Difficult Encounters (Marcus Aurelius 2.1)
+              </label>
+              <p class="text-xs text-stoic-600 dark:text-stoic-400 mt-1 leading-relaxed">
+                Mentally rehearse: <em>"When I wake up today, I will meet the meddling, ungrateful, arrogant, dishonest, jealous, and surly. They are like this because they cannot distinguish good from evil. But none of them can harm me."</em>
+              </p>
+              <div class="mt-3">
+                <input type="text" id="m_input_2" placeholder="Who or what potential obstacle might trigger irritation, and how will I stay composed?" class="w-full text-xs sm:text-sm bg-stoic-50 dark:bg-stoic-950 border border-stoic-200 dark:border-stoic-800 rounded-xl px-3 py-2 text-stoic-800 dark:text-stoic-200 focus:outline-none focus:border-stoic-500 transition">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3: Guarding the Inner Citadel (Assent to Impressions) -->
+        <div class="routine-card bg-white dark:bg-stoic-900 border border-stoic-200 dark:border-stoic-800 rounded-2xl p-5 shadow-sm transition hover:border-stoic-400 dark:hover:border-stoic-700">
+          <div class="flex items-start gap-4">
+            <input type="checkbox" id="m_check_3" data-section="morning" data-key="m_check_3" class="checklist-box mt-1 w-5 h-5 rounded border-stoic-300 text-amber-600 focus:ring-amber-500 dark:border-stoic-700 dark:bg-stoic-800 cursor-pointer">
+            <div class="flex-1">
+              <label for="m_check_3" class="font-semibold text-sm sm:text-base text-stoic-900 dark:text-stoic-100 cursor-pointer select-none">
+                3. The Sentinel at the Gate: Boundary Between Impression and Assent
+              </label>
+              <p class="text-xs text-stoic-600 dark:text-stoic-400 mt-1 leading-relaxed">
+                Commit to the Stoic buffer: When an alarming email, harsh comment, or stressful surprise occurs, do not assent immediately. Tell the impression: <em>"Wait for me a little, impression; let me see who you are and what you represent; let me put you to the test."</em>
+              </p>
+              <div class="mt-2 text-xs text-stoic-500 italic">
+                Rule: A 10-second breath before any emotionally charged reply or action.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4: Cardinal Virtues Intent -->
+        <div class="routine-card bg-white dark:bg-stoic-900 border border-stoic-200 dark:border-stoic-800 rounded-2xl p-5 shadow-sm transition hover:border-stoic-400 dark:hover:border-stoic-700">
+          <div class="flex items-start gap-4">
+            <input type="checkbox" id="m_check_4" data-section="morning" data-key="m_check_4" class="checklist-box mt-1 w-5 h-5 rounded border-stoic-300 text-amber-600 focus:ring-amber-500 dark:border-stoic-700 dark:bg-stoic-800 cursor-pointer">
+            <div class="flex-1">
+              <label for="m_check_4" class="font-semibold text-sm sm:text-base text-stoic-900 dark:text-stoic-100 cursor-pointer select-none">
+                4. Selection of Primary Cardinal Virtue for the Day
